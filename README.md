@@ -17,7 +17,7 @@ Como usar
     pag = new pagseguro('suporte@lojamodelo.com.br', '95112EE828D94278BD394E91C4388F20');
 
     //Configurando a moeda e a referência do pedido
-    pag.currency('BRL');
+    pag.currency('BRL'); //default: BRL
     pag.reference('12345');
 
     //Adicionando itens

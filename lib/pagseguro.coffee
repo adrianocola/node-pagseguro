@@ -6,6 +6,7 @@ xmlBuilder = new xml2js.Builder();
 class pagseguro
     constructor: (@email, @token) ->
         this.obj = new Object
+        this.obj['currency'] = 'BRL';
         this.xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
         return this
         
@@ -28,29 +29,40 @@ class pagseguro
         
     buyer: (obj) ->
         this.obj['sender'] = new Object;
-        this.obj.sender['name'] = obj.name;
-        this.obj.sender['email'] = obj.email;
+        if obj.name
+          this.obj.sender['name'] = obj.name
+        if obj.email
+          this.obj.sender['email'] = obj.email
+
         this.obj.sender['phone'] = new Object;
-        this.obj.sender.phone['areaCode'] = obj.phoneAreaCode;
-        this.obj.sender.phone['number'] = obj.phoneNumber;
+        if obj.phoneAreaCode
+          this.obj.sender.phone['areaCode'] = obj.phoneAreaCode
+        if obj.phoneNumber
+          this.obj.sender.phone['number'] = obj.phoneNumber
         return this;
         
     shipping: (obj) ->
         this.obj['shipping'] = new Object;
-        this.obj.shipping['type'] = obj.type;
+        if obj.type
+          this.obj.shipping['type'] = obj.type
+
         this.obj.shipping['address'] = new Object;
-        this.obj.shipping.address['street'] = obj.street;
-        this.obj.shipping.address['number'] = obj.number;
+        if obj.street
+          this.obj.shipping.address['street'] = obj.street
+        if obj.number
+          this.obj.shipping.address['number'] = obj.number
         if obj.complement 
           this.obj.shipping.address['complement'] = obj.complement;
-        
         if obj.district
           this.obj.shipping.address['district'] = obj.district;
-        
-        this.obj.shipping.address['postalCode'] = obj.postalCode;
-        this.obj.shipping.address['city'] = obj.city;
-        this.obj.shipping.address['state'] = obj.state;
-        this.obj.shipping.address['country'] = obj.country;
+        if obj.postalCode
+          this.obj.shipping.address['postalCode'] = obj.postalCode;
+        if obj.city
+          this.obj.shipping.address['city'] = obj.city;
+        if obj.state
+          this.obj.shipping.address['state'] = obj.state;
+        if obj.country
+          this.obj.shipping.address['country'] = obj.country;
         return this;
 
     ###
@@ -76,8 +88,18 @@ class pagseguro
             })
         };
         
-        return req(options, (err, res, body) -> 
-            return callback(err) if err || res.statusCode != 200
+        return req(options, (err, res, body) ->
+
+            if err
+              return callback(err)
+
+            if res.statusCode != 200
+              return xml2js.parseString body, (err, result) ->
+                return callback(err) if err
+
+                errCode = result.errors.error[0].code[0];
+                errMsg = result.errors.error[0].message[0];
+                callback(new Error('Pagseguro ' + errCode + ': '+ errMsg));
 
             xml2js.parseString body, (err, result) ->
               return callback(err) if err
