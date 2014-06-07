@@ -16,7 +16,7 @@ Como usar
     pagseguro = require('pagseguro');
     pag = new pagseguro('suporte@lojamodelo.com.br', '95112EE828D94278BD394E91C4388F20');
 
-    //Configurando a moeda e a ferência do pedido
+    //Configurando a moeda e a referência do pedido
     pag.currency('BRL');
     pag.reference('12345');
 

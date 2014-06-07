@@ -19,11 +19,16 @@
             "name" : "Bernardo F. Domingues",
             "email" : "bernardofd@gmail.com",
             "url" : "https://github.com/bernardofd"
+        },
+        {
+            "name" : "Adriano Cola",
+            "email" : "adrianocola@gmail.com",
+            "url" : "https://github.com/adrianocola"
         }
     ],
     "name": "pagseguro",
     "description": "Fornece integração à API de pagamentos do PagSeguro",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "homepage": "https://github.com/cranic/node-pagseguro",
     "repository": {
         "type": "git",
@@ -34,8 +39,8 @@
         "build" : "npm run prepublish"
     },
     "dependencies": {
-        "request": "2.9.x",
-        "jstoxml": "0.1.x"
+        "request": "2.x",
+        "xml2js": "0.x"
     },
     "devDependencies": {
         "coffee-script" : "*"

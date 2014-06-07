@@ -1,6 +1,7 @@
-xml = require('jstoxml');
-
 req = require('request');
+
+xml2js = require('xml2js');
+xmlBuilder = new xml2js.Builder();
 
 class pagseguro
     constructor: (@email, @token) ->
@@ -70,15 +71,21 @@ class pagseguro
             headers: {
                 'Content-Type': 'application/xml; charset=UTF-8'
             },
-         
-        body: this.xml + xml.toXML({
-            checkout: this.obj
-        })
+            body: this.xml + xmlBuilder.buildObject({
+                checkout: this.obj
+            })
         };
         
         return req(options, (err, res, body) -> 
-            callback(err) if err
-            callback(null, body) if !err
+            return callback(err) if err || res.statusCode != 200
+
+            xml2js.parseString body, (err, result) ->
+              return callback(err) if err
+
+              code = result.checkout.code[0];
+              date = new Date(result.checkout.date[0]);
+
+              callback(null, {code: code, date: date, url: "https://pagseguro.uol.com.br/v2/checkout/payment.html?code=" + code});
         );
 
 module.exports = pagseguro;
